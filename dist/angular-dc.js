@@ -154,9 +154,9 @@
                                 return undefined;
                             }
                         });
+                        // return undefined if there is at least one undefined option
+                        // so that the $watch dont call us again at this $digest time
                         if (options.any(_.isUndefined)) {
-                            // return undefined if there is at least one undefined option
-                            // so that the $watch dont call us again at this $digest time
                             return undefined;
                         }
                         return options.value();
@@ -171,7 +171,6 @@
                                 chart.filterAll();
                                 dc.redrawAll();
                             });
-                            a.attr('href', '');
                             a.css('display', 'none');
                             // watching the attributes is costly, so we stop after first rendering
                             chart.render();
@@ -210,7 +209,7 @@
             link: function(scope, iElement, iAttrs) {
                 scope.$watch('dcDimension', function(dimension) {
                     var allkeys, chart;
-                    if (dimension !== null) {
+                    if (!_.isEmpty(dimension)) {
                         // we make a fake chart so that the dimension is known by dc.filterAll()
                         chart = dc.baseMixin({});
                         chart.dimension(dimension);
@@ -225,8 +224,8 @@
                     }
                 });
                 return scope.$watch('selectModel', function(sel) {
-                    if (scope.dcDimension !== null) {
-                        if (sel !== null && sel.key !== scope.allLabel) {
+                    if (!_.isEmpty(scope.dcDimension)) {
+                        if (!_.isEmpty(sel) && sel.key !== scope.allLabel) {
                             scope.dcDimension.filter(function(d) {
                                 return d === sel.key;
                             });
