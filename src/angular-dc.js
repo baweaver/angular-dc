@@ -65,6 +65,7 @@ angularDc.directive('dcChart', ['$timeout',
         options = _.merge(options, options.options);
         options.options = undefined;
       }
+
       // If we have a dc-name attribute, we populate the scope with the chart
       // object dc-name
       if ('name' in options) {
@@ -128,16 +129,20 @@ angularDc.directive('dcChart', ['$timeout',
       restrict: 'A',
       link: function(scope, iElement, iAttrs) {
         var printExceptions = false;
+
         // add dc, d3 and commonly used Date method to the scope to allow snippets to be configured in
         // the templates
         scope.dc = dc;
         scope.d3 = d3;
+
         scope.DateTime = function(a, b, c, d, e, f) {
           return new Date(a, b, c, d, e, f);
         };
+
         scope.Date = function(a, b, c) {
           return new Date(a, b, c);
         };
+
         // watch for the scope to settle until all the attributes are defined
         var unwatch = scope.$watch(function() {
           var options = _(iAttrs.$attr)
@@ -150,23 +155,28 @@ angularDc.directive('dcChart', ['$timeout',
                 // We ignore exception waiting for the data to be potentially loaded
                 // by the controller
                 var r = scope.$eval(iAttrs[key]);
+
                 if (_.isUndefined(r)) {
                   throw new Error(iAttrs[key] + ' is undefined');
                 }
+
                 return r;
               } catch (e) {
                 if (printExceptions) {
                   console.log('unable to eval' + key + ':' + iAttrs[key]);
                   throw e;
                 }
+
                 return undefined;
               }
             });
+
+          // return undefined if there is at least one undefined option
+          // so that the $watch dont call us again at this $digest time
           if (options.any(_.isUndefined)) {
-            // return undefined if there is at least one undefined option
-            // so that the $watch dont call us again at this $digest time
             return undefined;
           }
+
           return options.value();
         }, function(options) {
           if (!_.isUndefined(options)) {
@@ -174,14 +184,17 @@ angularDc.directive('dcChart', ['$timeout',
             unwatch();
 
             var chart = setupChart(scope, iElement, iAttrs);
+
             // populate the .reset childrens with necessary reset callbacks
             var a = angular.element(iElement[0].querySelector('a.reset'));
+
             a.on('click', function() {
               chart.filterAll();
               dc.redrawAll();
             });
-            a.attr('href', '');
+
             a.css('display', 'none');
+
             // watching the attributes is costly, so we stop after first rendering
             chart.render();
           }
@@ -191,10 +204,8 @@ angularDc.directive('dcChart', ['$timeout',
         $timeout(function() {
           printExceptions = true;
         }, 2000);
-
       }
     };
-
   }
 ]);
 
@@ -223,7 +234,8 @@ angularDc.directive('dcSelect', [
       link: function(scope, iElement, iAttrs) {
         scope.$watch('dcDimension', function(dimension) {
           var allkeys, chart;
-          if (dimension !== null) {
+
+          if (!_.isEmpty(dimension)) {
             // we make a fake chart so that the dimension is known by dc.filterAll()
             chart = dc.baseMixin({});
 
@@ -243,8 +255,8 @@ angularDc.directive('dcSelect', [
         });
 
         return scope.$watch('selectModel', function(sel) {
-          if (scope.dcDimension !== null) {
-            if (sel !== null && sel.key !== scope.allLabel) {
+          if (!_.isEmpty(scope.dcDimension)) {
+            if (!_.isEmpty(sel) && sel.key !== scope.allLabel) {
               scope.dcDimension.filter(function(d) {
                 return d === sel.key;
               });
