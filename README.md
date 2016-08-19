@@ -1,6 +1,6 @@
 # Fork Note
 
-As the original author has not been maintaining this package, I'll be doing some independant cleanup and getting it back up to date.
+As the original author has not been maintaining this package, I'll be doing some independent cleanup and getting it back up to date.
 
 This will include far more comprehensive documentation of the DC.js options available and examples therein.
 
