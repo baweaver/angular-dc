@@ -1,9 +1,14 @@
+# Fork Note
+
+As the original author has not been maintaining this package, I'll be doing some independant cleanup and getting it back up to date.
+
+This will include far more comprehensive documentation of the DC.js options available and examples therein.
+
 # angular-dc
 
 AngularJS directives for dc.js
 
 [![Build Status](https://travis-ci.org/TomNeyland/angular-dc.svg)](https://travis-ci.org/TomNeyland/angular-dc)
-
 
 Node deps: [![David](https://david-dm.org/TomNeyland/neweden.im-frontend.svg)](https://david-dm.org/TomNeyland/angular-dc.svg)
 
